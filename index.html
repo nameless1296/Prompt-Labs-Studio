@@ -1,0 +1,642 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#111318">
+
+  <title>Prompt Lab Studio</title>
+
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.mjs"></script>
+</head>
+
+<body>
+  <header class="app-header">
+    <button
+  id="menu-toggle"
+  class="menu-toggle secondary-button"
+  type="button"
+  aria-controls="tool-menu"
+  aria-expanded="false"
+>
+  ☰ Menu
+</button>
+    <div class="brand">
+      <div class="brand-mark">P</div>
+
+      <div>
+        <h1>Prompt Lab Studio</h1>
+        <p>Prompt workspace</p>
+      </div>
+    </div>
+
+    <span class="status-indicator">
+      <span class="status-dot"></span>
+      Local workspace
+    </span>
+    <div class="language-picker">
+      <button
+        id="help-button"
+        class="help-button secondary-button"
+        type="button"
+        aria-label="Open user manual"
+        aria-haspopup="dialog"
+        aria-controls="user-manual"
+        title="User manual"
+      >?</button>
+      <button
+        id="language-button"
+        class="language-toggle secondary-button"
+        type="button"
+        aria-label="Current language: English"
+        aria-haspopup="menu"
+        aria-expanded="false"
+        aria-controls="language-menu"
+        title="Language"
+      >
+        <svg aria-hidden="true" viewBox="0 0 20 20">
+          <circle cx="10" cy="10" r="7.5"></circle>
+          <ellipse cx="10" cy="10" rx="3.5" ry="7.5"></ellipse>
+          <path d="M2.8 7h14.4M2.8 13h14.4"></path>
+        </svg>
+        <span id="language-label">English</span>
+      </button>
+      <div id="language-menu" class="language-menu" role="menu" aria-label="Select language" hidden>
+        <button type="button" role="menuitemradio" data-language="en" aria-checked="true">English</button>
+        <button type="button" role="menuitemradio" data-language="zh-CN" aria-checked="false">简体中文</button>
+      </div>
+    </div>
+  </header>
+<nav id="tool-menu" class="tool-menu" aria-label="Tools" hidden>
+  <button type="button" data-tool="home">Home</button>
+  <button type="button" data-tool="editor">Prompt Editor</button>
+  <button type="button" data-tool="cleaner">Prompt Cleaner</button>
+  <button type="button" data-tool="tagger">Prompt Tagger</button>
+  <button type="button" data-tool="categorizer">Tag Categorizer</button>
+  <button type="button" data-tool="diff">Prompt Diff</button>
+  <button type="button" data-tool="weights">Weight Manager</button>
+  <button type="button" data-tool="batch">Batch Processor</button>
+</nav>
+  <main id="home-view" class="home-view home-view--entering">
+    <section class="home-hero">
+      <div class="home-hero-copy">
+        <p class="eyebrow">YOUR CREATIVE WORKSPACE</p>
+        <h2>Make your next prompt better.</h2>
+        <p class="home-hero-description">
+          Write, refine, and explore image-generation prompts with a focused set of tools.
+        </p>
+        <div class="home-quick-actions">
+          <button id="home-new-prompt-button" class="home-primary-action" type="button">
+            <span aria-hidden="true">＋</span>
+            New Prompt
+          </button>
+          <button id="home-open-document-button" class="home-secondary-action" type="button">
+            Open a document
+          </button>
+        </div>
+      </div>
+      <div class="home-hero-art" aria-hidden="true">
+        <div class="hero-orbit hero-orbit-one"></div>
+        <div class="hero-orbit hero-orbit-two"></div>
+        <div class="hero-prompt-card">
+          <span class="hero-card-dot"></span>
+          <span class="hero-card-line hero-card-line-long"></span>
+          <span class="hero-card-line hero-card-line-medium"></span>
+          <span class="hero-card-tag">prompt</span>
+        </div>
+        <span class="hero-spark hero-spark-one">✦</span>
+        <span class="hero-spark hero-spark-two">✧</span>
+      </div>
+    </section>
+
+    <section class="home-tools-section" aria-labelledby="home-tools-heading">
+      <div class="home-section-heading">
+        <div>
+          <p class="eyebrow">TOOLS</p>
+          <h2 id="home-tools-heading">Choose a tool</h2>
+        </div>
+        <p>Start with your idea and move between tools whenever you need.</p>
+      </div>
+      <div class="home-tool-grid">
+        <article class="home-tool-card home-tool-editor">
+          <div class="home-tool-icon" aria-hidden="true">✎</div>
+          <p class="home-tool-kicker">WRITE</p>
+          <h3>Prompt Editor</h3>
+          <p>Write and validate prompts, search tags, and manage document files.</p>
+          <button type="button" data-tool="editor">Open Editor <span aria-hidden="true">→</span></button>
+        </article>
+        <article class="home-tool-card home-tool-cleaner">
+          <div class="home-tool-icon" aria-hidden="true">⌁</div>
+          <p class="home-tool-kicker">REFINE</p>
+          <h3>Prompt Cleaner</h3>
+          <p>Review duplicate tags and remove terms with exact or fuzzy filters.</p>
+          <button type="button" data-tool="cleaner">Open Cleaner <span aria-hidden="true">→</span></button>
+        </article>
+        <article class="home-tool-card home-tool-tagger">
+          <div class="home-tool-icon" aria-hidden="true">✧</div>
+          <p class="home-tool-kicker">DISCOVER</p>
+          <h3>Prompt Tagger</h3>
+          <p>Generate tags from an image, filter results, and copy your selection.</p>
+          <button type="button" data-tool="tagger">Open Tagger <span aria-hidden="true">→</span></button>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-recent-section" aria-labelledby="home-recent-heading">
+      <div class="home-section-heading">
+        <div>
+          <p class="eyebrow">PICK UP WHERE YOU LEFT OFF</p>
+          <h2 id="home-recent-heading">Recent Documents</h2>
+        </div>
+        <span class="home-local-note">Saved in this browser</span>
+      </div>
+      <div id="recent-documents-list" class="recent-documents-list"></div>
+      <p id="recent-documents-empty" class="recent-documents-empty">
+        No recent documents yet. Create a prompt or open a document to get started.
+      </p>
+    </section>
+  </main>
+
+  <main id="workspace" class="workspace" hidden>
+    <section class="panel document-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">DOCUMENT</p>
+          <h2>Untitled prompt</h2>
+        </div>
+
+        <span class="panel-number">01</span>
+      </div>
+
+      <label for="document-title">Document title</label>
+
+      <input
+        id="document-title"
+        type="text"
+        placeholder="Enter a document title"
+        value="Untitled prompt"
+      >
+
+      <p
+        id="title-message"
+        class="field-message"
+        aria-live="polite"
+      ></p>
+
+      <div class="tag-search-panel">
+        <label for="tag-search-input">Danbooru Tag Search</label>
+
+        <input
+          id="tag-search-input"
+          type="text"
+          placeholder="Search tags, e.g. blue hair..."
+          autocomplete="off"
+        >
+
+        <div
+          id="tag-search-results"
+          class="tag-search-results"
+          aria-live="polite"
+        >
+          Enter a keyword to search tags.
+        </div>
+      </div>
+    </section>
+
+    <div class="editor-column">
+    <section class="panel editor-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">WORKSPACE</p>
+          <h2>Prompt editor</h2>
+        </div>
+
+        <span class="panel-number">02</span>
+      </div>
+
+      <div class="prompt-label-row">
+        <label for="prompt-source">Source text</label>
+
+        <div class="syntax-legend">
+          <span class="legend-item">
+            <span class="legend-dot legend-tag"></span>
+            Tags
+          </span>
+
+          <span class="legend-item">
+            <span class="legend-dot legend-weight"></span>
+            Weighted expressions
+          </span>
+        </div>
+      </div>
+
+      <div class="prompt-editor">
+        <pre
+          id="prompt-highlight"
+          class="prompt-highlight"
+          aria-hidden="true"
+        ></pre>
+
+        <textarea
+          id="prompt-source"
+          spellcheck="false"
+          placeholder="Write your prompt here..."
+          aria-describedby="prompt-help"
+        ></textarea>
+      </div>
+
+      <p id="prompt-help" class="field-hint">
+        Your original text stays unchanged by validation.
+      </p>
+
+      <div class="editor-actions">
+        <button id="validate-button" type="button">
+          Validate prompt
+        </button>
+
+        <button
+          id="new-document-button"
+          type="button"
+          class="secondary-button"
+        >
+          New Document
+        </button>
+
+        <button
+          id="save-json-button"
+          type="button"
+          class="secondary-button"
+        >
+          Save JSON
+        </button>
+
+        <button
+          id="save-txt-button"
+          type="button"
+          class="secondary-button"
+        >
+          Export TXT
+        </button>
+
+        <button
+          id="open-document-button"
+          type="button"
+          class="secondary-button"
+        >
+          Open File
+        </button>
+
+        <input
+          id="open-file-input"
+          type="file"
+          accept=".json,.txt,application/json,text/plain"
+          hidden
+        >
+
+        <button
+          id="undo-button"
+          type="button"
+          class="secondary-button"
+        >
+          Undo
+        </button>
+
+        <button
+          id="redo-button"
+          type="button"
+          class="secondary-button"
+        >
+          Redo
+        </button>
+      </div>
+    </section>
+
+     <section class="panel validation-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">DIAGNOSTICS</p>
+          <h2>Validation results</h2>
+        </div>
+        <span class="panel-number">03</span>
+      </div>
+
+      <div id="validation-status" class="validation-status" aria-live="polite">
+        <span class="status-dot"></span>
+        Not validated yet
+      </div>
+
+      <ul id="validation-results" class="validation-results">
+        <li>Run validation to check for unmatched parentheses.</li>
+      </ul>
+    </section>
+    </div>
+  </main>
+<section id="tool-placeholder" class="panel tool-placeholder" hidden>
+<div id="tagger-tool-content" hidden>
+  <h2>Image Tagger</h2>
+  <p>Select an image to send it to the PixAI Tagger Demo and generate tags.</p>
+
+  <div class="tagger-layout">
+    <section class="tagger-upload-panel">
+      <div class="tagger-image-preview" tabindex="0">
+        <p id="tagger-image-placeholder">Drop, select, or paste an image to preview it here</p>
+        <img id="tagger-image-preview" alt="Image preview for tagging" hidden>
+<button
+  id="remove-tagger-image-button"
+  class="remove-tagger-image-button"
+  type="button"
+  aria-label="Remove image"
+  title="Remove image"
+  hidden
+>
+  ×
+</button>
+      </div>
+      
+      <label for="tagger-image">Choose image</label>
+      <input id="tagger-image" type="file" accept="image/*">
+      <label class="tagger-optimize-option" for="tagger-optimize-upload">
+        <input id="tagger-optimize-upload" type="checkbox" checked>
+        <span>
+          <strong>Optimize upload</strong>
+          <small>Max dimension 1536px · WebP quality 0.92</small>
+        </span>
+      </label>
+
+      <button id="run-tagger-button" type="button" disabled>
+        Generate tags
+      </button>
+    </section>
+
+    <section class="tagger-results-panel">
+      <div id="tagger-stats" class="tagger-stats" aria-live="polite">
+        No tags generated yet
+      </div>
+
+      <p id="tagger-status" aria-live="polite">Select an image to get started.</p>
+      <button id="reset-tagger-thresholds-button" class="secondary-button" type="button">
+        Reset thresholds
+      </button>
+      <section class="tagger-feature-filters" aria-labelledby="tagger-feature-filters-heading">
+        <div class="tagger-feature-filters-header">
+          <h3 id="tagger-feature-filters-heading">Character Feature Filters</h3>
+          <span id="tagger-feature-filter-summary">All categories allowed</span>
+        </div>
+        <p>Turn off a filter to exclude matching tags from the preview, copied output, and Prompt Editor replacement. Tags remain visible in the list.</p>
+        <div class="tagger-feature-filter-list">
+          <label class="tagger-feature-filter" title="Filter eye-color and heterochromia tags">
+            <input type="checkbox" data-tagger-feature="eye-color" checked>
+            <span><strong>Eye color</strong><small>blue_eyes · red_eyes · heterochromia</small></span>
+          </label>
+          <label class="tagger-feature-filter" title="Filter hair-color, two-tone, gradient, and streaked-hair tags">
+            <input type="checkbox" data-tagger-feature="hair-color" checked>
+            <span><strong>Hair color</strong><small>black_hair · blonde_hair · two-tone_hair</small></span>
+          </label>
+          <label class="tagger-feature-filter" title="Filter non-color hairstyle, hair-length, and styling tags">
+            <input type="checkbox" data-tagger-feature="hairstyle" checked>
+            <span><strong>Hairstyle / length</strong><small>long_hair · twintails · ahoge</small></span>
+          </label>
+          <label class="tagger-feature-filter" title="Filter dark-skin, brown-skin, and tan tags">
+            <input type="checkbox" data-tagger-feature="dark-skin" checked>
+            <span><strong>Dark skin / tan</strong><small>dark_skin · tan · dark-skinned_female</small></span>
+          </label>
+          <label class="tagger-feature-filter" title="Filter animal ears, tails, and kemonomimi traits">
+            <input type="checkbox" data-tagger-feature="kemonomimi" checked>
+            <span><strong>Animal traits</strong><small>animal_ears · cat_ears · fox_tail</small></span>
+          </label>
+          <label class="tagger-feature-filter" title="Filter elf and pointed-ear traits">
+            <input type="checkbox" data-tagger-feature="elf" checked>
+            <span><strong>Elf traits</strong><small>elf · pointy_ears · dark_elf</small></span>
+          </label>
+          <label class="tagger-feature-filter" title="Filter angel, halo, and wing traits">
+            <input type="checkbox" data-tagger-feature="angelic" checked>
+            <span><strong>Angelic traits</strong><small>angel · halo · feathered_wings</small></span>
+          </label>
+          <label class="tagger-feature-filter" title="Filter demon, horn, bat-wing, and succubus traits">
+            <input type="checkbox" data-tagger-feature="demonic" checked>
+            <span><strong>Demonic traits</strong><small>horns · demon_tail · succubus</small></span>
+          </label>
+        </div>
+      </section>
+      <section class="tagger-output-panel" aria-label="Selected tag output">
+        <div class="tagger-output-header">
+          <div>
+            <h3>Selected Tag Output</h3>
+            <p id="tagger-output-count" aria-live="polite">0 selected tags available to copy</p>
+          </div>
+          <div class="tagger-output-actions">
+            <label for="tagger-sort-mode">Sort</label>
+            <select id="tagger-sort-mode">
+              <option value="confidence">Confidence: high to low</option>
+              <option value="alphabetical">A–Z within categories</option>
+              <option value="global-alphabetical">A–Z overall</option>
+            </select>
+            <label class="tagger-format-option" for="tagger-keep-underscores">
+              <input id="tagger-keep-underscores" type="checkbox">
+              Keep underscores
+            </label>
+            <label class="tagger-format-option" for="tagger-artist-prefix">
+              <input id="tagger-artist-prefix" type="checkbox">
+              Add artist: prefix to Style tags
+            </label>
+            <button id="copy-all-tagger-tags-button" type="button" disabled>
+              Copy all selected
+            </button>
+          </div>
+        </div>
+        <pre id="tagger-output-preview">Selected tags will appear here.</pre>
+      </section>
+      <div id="tagger-results" aria-live="polite"></div>
+      <details id="tagger-score-browser" class="tagger-score-browser" hidden>
+        <summary>
+          Raw Confidence Lookup
+          <span id="tagger-score-count">0 tags</span>
+        </summary>
+        <label for="tagger-score-search">Search tags</label>
+        <input id="tagger-score-search" type="search" placeholder="Enter a tag or category">
+        <div class="tagger-score-table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Tag</th>
+                <th scope="col">Category</th>
+                <th scope="col">Confidence</th>
+              </tr>
+            </thead>
+            <tbody id="tagger-score-rows"></tbody>
+          </table>
+        </div>
+        <p id="tagger-score-empty" hidden>No matching tags.</p>
+      </details>
+
+      <button id="append-tagger-tags-button" type="button" disabled>
+        Put in Prompt Editor (overwrite)
+      </button>
+    </section>
+  </div>
+</div>
+
+<div id="cleaner-tool-content" hidden>
+  <h2 id="tool-placeholder-title">Prompt Cleaner</h2>
+  <p>Organize prompt tags and manage terms to block.</p>
+
+  <div class="cleaner-layout">
+    <section class="cleaner-main-panel">
+      <div class="cleaner-main-columns">
+        <section class="cleaner-editor-panel">
+          <label for="cleaner-source">Prompt</label>
+          <textarea id="cleaner-source" spellcheck="false"></textarea>
+
+          <button id="analyze-cleanup-button" type="button">
+            Analyze prompt
+          </button>
+
+          <div id="cleanup-preview" hidden aria-live="polite">
+            <h3>Output</h3>
+            <div class="cleanup-output-controls">
+              <div class="cleanup-view-toggle" role="group" aria-label="Output display mode">
+                <button id="cleanup-marked-preview-button" type="button" aria-pressed="true">
+                  Marked preview
+                </button>
+                <button id="cleanup-clean-output-button" type="button" aria-pressed="false">
+                  Clean output
+                </button>
+              </div>
+              <button id="copy-cleanup-result-button" type="button">
+                Copy cleaned result
+              </button>
+            </div>
+            <pre id="cleanup-result"></pre>
+            <p id="cleanup-copy-status" class="field-message" aria-live="polite"></p>
+            <button id="apply-cleanup-button" type="button">Put in Prompt Editor</button>
+            <button id="cancel-cleanup-button" type="button">Cancel</button>
+            <pre id="cleanup-original" hidden></pre>
+          </div>
+        </section>
+
+        <section class="cleaner-blocked-panel">
+          <h3>Blocked Terms</h3>
+          <p>Add terms to block, then choose exact or fuzzy matching for each term.</p>
+
+          <p>Click a tag on the right to add it to the block list, then choose exact or fuzzy matching.</p><div id="cleanup-blocked-terms"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="cleaner-tags-panel">
+      <h3>Prompt Tags</h3>
+      <p>Click tags to mark them for blocking. Red indicates exact matches; yellow indicates fuzzy matches. Blocked tags are shown with strikethrough in the preview and removed when applied.</p>
+      <div id="cleanup-tags" class="cleanup-tags"></div>
+    </section>
+  </div>
+</div>
+
+  <p id="tool-placeholder-message" hidden>This tool is not implemented yet.</p>
+</section>
+
+  <footer class="app-footer">
+    <span>Prompt Lab Studio</span>
+    <span>Zero-dependency prototype</span>
+  </footer>
+
+  <div
+    id="confirm-modal"
+    class="confirm-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="confirm-modal-title"
+    aria-describedby="confirm-modal-message"
+    hidden
+  >
+    <div class="confirm-modal-backdrop"></div>
+
+    <section class="confirm-modal-card">
+      <div class="confirm-modal-icon" aria-hidden="true">!</div>
+
+      <h2 id="confirm-modal-title">Create New Document?</h2>
+
+      <p id="confirm-modal-message">
+        You have unsaved changes. Do you want to discard them and create a new document?
+      </p>
+
+      <div class="confirm-modal-actions">
+        <button
+          id="confirm-cancel-button"
+          type="button"
+          class="secondary-button"
+        >
+          Discard Changes
+        </button>
+
+        <button id="confirm-continue-button" type="button">
+          Create New
+        </button>
+      </div>
+    </section>
+  </div>
+
+  <div
+    id="user-manual"
+    class="user-manual"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="user-manual-title"
+    hidden
+  >
+    <div class="user-manual-backdrop"></div>
+    <section class="user-manual-card">
+      <header class="user-manual-header">
+        <div>
+          <p class="eyebrow">HELP</p>
+          <h2 id="user-manual-title">Prompt Lab Studio User Manual</h2>
+        </div>
+        <button id="close-user-manual" class="user-manual-close" type="button" aria-label="Close user manual" title="Close">×</button>
+      </header>
+
+      <div class="user-manual-content">
+        <section>
+          <h3>Getting Started</h3>
+          <p>Use the Menu button to switch between Prompt Editor, Prompt Cleaner, and Prompt Tagger. The other listed tools are not implemented yet.</p>
+        </section>
+        <section>
+          <h3>Prompt Editor</h3>
+          <ul>
+            <li>Enter or edit prompt text in the editor. Validation checks for unmatched parentheses and does not modify your text.</li>
+            <li>Undo and Redo move through your editing history. Starting a new document resets that document's history.</li>
+            <li>Use Danbooru Tag Search to find tags. Select a result to insert it at the current cursor position.</li>
+            <li>Save JSON to preserve the document title and prompt; Export TXT to save prompt text only; Open File accepts JSON and TXT files.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Prompt Cleaner</h3>
+          <ul>
+            <li>Analyze the prompt, then review the output. Switch between marked preview and clean output.</li>
+            <li>Click a tag to add it to Blocked Terms. Choose Exact or Fuzzy matching for each term.</li>
+            <li>Copy cleaned result copies the clean text. Put in Prompt Editor asks for confirmation before replacing the editor content.</li>
+            <li>If the editor prompt changed after analysis, analyze again before applying the result.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Prompt Tagger</h3>
+          <ul>
+            <li>Select, drop, or paste an image, then choose Generate tags. Image optimization is enabled by default and can be turned off.</li>
+            <li>The image is sent to the public PixAI Tagger Demo for processing.</li>
+            <li>Adjust category confidence thresholds, use feature filters, and select the tags you want. Filters and thresholds affect which tags are included in output.</li>
+            <li>Use the output controls to sort and format tags. Copy all selected copies the selected tags; Put in Prompt Editor (overwrite) asks before replacing the editor content.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Privacy and Storage</h3>
+          <p>Your draft and preferences are stored in this browser. Tagger images are sent to the public PixAI service, and Danbooru searches contact the Danbooru API. Avoid using private content unless you are comfortable with these services.</p>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <div id="copy-toast" class="copy-toast" role="status" aria-live="polite" hidden></div>
+
+</body>
+</html>
