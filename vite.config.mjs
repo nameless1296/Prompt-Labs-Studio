@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/Prompt-Lab-Studio/',
+  base: '/Prompt-Labs-Studio/',
 });
